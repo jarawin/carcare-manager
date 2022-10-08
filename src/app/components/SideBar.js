@@ -1,5 +1,18 @@
 import React from 'react'
 
+const page = [
+    {
+        name: "dashboard",
+        path: "/",
+        idx: 0
+    },
+    {
+        name: "employees",
+        path: "/employees",
+        idx: 1
+    }
+]
+
 function SideBar() {
     return (
         <div class="h-screen hidden lg:block my-4 ml-4 shadow-lg relative w-80">
