@@ -1,5 +1,18 @@
 import React from "react";
 
+const page = [
+    {
+        name: "dashboard",
+        path: "/",
+        idx: 0
+    },
+    {
+        name: "employees",
+        path: "/employees",
+        idx: 1
+    }
+]
+
 function SideBar() {
 
     
