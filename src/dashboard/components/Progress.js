@@ -11,41 +11,48 @@ const status_list = [
         name: "CANCELLED",
         color: "bg-red-200",
         text_color: "text-red-500",
+        progressColor: "bg-red-500",
         progress: 'w-12/12',
     },
     {
         name: "ARRIVED",
         color: "bg-purple-100",
         text_color: "text-purple-500",
+        progressColor: "bg-purple-500",
         progress: 'w-2/12',
     },
     {
         name: "BOOKING",
         color: "bg-pink-100",
         text_color: "text-pink-600",
+        progressColor: "bg-pink-600",
         progress: 'w-1/12',
     },
     {
         name: "DROPPED_OFF",
         color: "bg-orange-100",
         text_color: "text-orange-500",
+        progressColor: "bg-orange-500",
         progress: 'w-4/12',
     },
     {
         name: "WORKING",
         color: "bg-yellow-100",
         text_color: "text-yellow-500",
+        progressColor: "bg-yellow-500",
         progress: 'w-6/12',
     },
     {
         name: "PICKED_UP",
         color: "bg-blue-100",
         text_color: "text-blue-500",
+        progressColor: "bg-blue-500",
         progress: 'w-10/12',
     },
     {
         name: "COMPLETED",
         color: "bg-green-100",
+        progressColor: "bg-green-500",
         text_color: "text-green-500",
         progress: 'w-12/12',
     },
@@ -58,7 +65,12 @@ const handleStatus = (status) => {
 
 const handleProgress = (status) => {
     const status_index = status_list.findIndex((item) => item.name === status);
-    return status_list[status_index].progress;
+    return status_list[status_index].progress + " " + status_list[status_index].progressColor + " ";
+};
+
+const handleProgressBar = (status) => {
+    const status_index = status_list.findIndex((item) => item.name === status);
+    return status_list[status_index].color + " ";
 };
 
 const fillZero = (num) => {
@@ -77,6 +89,8 @@ function Progress() {
         {
             comment: "Please call me when you arrive at the location to pick up the car",
             order_id: 1,
+            customer_img: "https://lh3.googleusercontent.com/a/ALm5wu0axHTXBreX09jP18jpvPSk6Oy4xfaSF9teUo3WLg=s96-c",
+            employee_img: "https://i.pravatar.cc/150?img=5",
             type_car: "SEDAN",
             license_car: "กก 1234 สงขลา",
             color_car: "WHITE",
@@ -84,9 +98,9 @@ function Progress() {
             order_status: "BOOKING",
             tel: "0812345678",
             is_booking: true,
-            booking_time: "2020-01-01 12:00:00",
-            arrived_time: "2020-01-01 12:00:00",
-            code: "1234",
+            booking_time: "12:45:39",
+            arrived_time: "13:54:45",
+            code: "NEWYEAR2022",
             order_type: "GENERAL",
             services: [
                 {
@@ -104,6 +118,12 @@ function Progress() {
             ],
         },
         {
+            customer_id: 1,
+            employee_id: 1,
+            customer_name: "สมชาย",
+            employee_name: "พนักงาน 1",
+            customer_img: "https://lh3.googleusercontent.com/a/ALm5wu0axHTXBreX09jP18jpvPSk6Oy4xfaSF9teUo3WLg=s96-c",
+            employee_img: "https://i.pravatar.cc/150?img=3",
             order_id: 1,
             type_car: "SEDAN",
             license_car: "กก 1234 สงขลา",
@@ -111,10 +131,8 @@ function Progress() {
             nickname: "สมชาย",
             order_status: "BOOKING",
             tel: "0812345678",
-            is_booking: true,
-            booking_time: "12:00:00:000",
-            arrival_time: "12:00:00:000",
-            code: "1234",
+            is_booking: false,
+            arrived_time: "12:00:00",
             order_type: "GENERAL",
             services: [
                 {
@@ -184,8 +202,6 @@ function Progress() {
     };
 
 
-
-
     return order.map((item, oIdx) => {
         return (
             <div class="mb-4" key={item.order_id}>
@@ -194,7 +210,7 @@ function Progress() {
                         <div class="flex items-center">
                             {/* NOTE Popup Setting */}
                             <div className="relative">
-                                <button onClick={() => setShowSetting(true)} onBlur={handleBlur} class="text-gray-200 mr-1" id="dropdownMenuIconButton" dataDropdownToggle="dropdownDots">
+                                <button onClick={() => setShowSetting(true)} onBlur={handleBlur} class="text-gray-200 mr-1 mt-2" id="dropdownMenuIconButton" dataDropdownToggle="dropdownDots">
                                     <Kebab />
                                 </button>
                                 <div id="dropdownDots" class={(showSetting ? "" : "hidden") + " absolute  z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600"}>
@@ -236,11 +252,10 @@ function Progress() {
                                     <span className="text-xxs">{item.tel}</span>
                                 </span>
 
-                                <img
-                                    class="inline-block h-10 w-10 bg-red-300 rounded-full object-cover ring-2 ring-white"
-                                    src="https://lh3.googleusercontent.com/a/ALm5wu0axHTXBreX09jP18jpvPSk6Oy4xfaSF9teUo3WLg=s96-c"
-                                    alt="Guy"
-                                />
+                                <div class="flex -space-x-4">
+                                    <img class="w-10 h-10 z-20 rounded-full border-2 border-white dark:border-gray-800" src={item.customer_img} alt="" />
+                                    <img class="w-10 h-10 rounded-full border-2 border-white dark:border-gray-800" src={item.employee_img} alt="" />
+                                </div>
                             </span>
                         </div>
                     </div>
@@ -286,32 +301,37 @@ function Progress() {
                         </p>
                     </div>
 
+                    {/* NOTE Others Info */}
                     <div class="flex items-center justify-start my-4 space-x-4">
                         {
-                            showBooking ?
-                                (
-                                    <span onClick={() => setShowBooking(false)} class="px-2 py-1 flex items-center cursor-pointer text-xs rounded-md font-semibold text-blue-500 bg-blue-50">
-                                        {item.booking_time}
-                                    </span>
-                                ) :
-                                (
-                                    <span onClick={() => setShowBooking(true)} class="px-2 py-1 flex items-center cursor-pointer font-semibold text-xs rounded-md text-blue-400 border border-blue-400  bg-white">
-                                        จองคิว
-                                    </span>
-                                )
+                            item.booking_time ?
+                                showBooking ?
+                                    (
+                                        <span onClick={() => setShowBooking(false)} class="px-2 py-1 flex items-center cursor-pointer text-xs rounded-md font-semibold text-blue-500 bg-blue-50">
+                                            {item.booking_time}
+                                        </span>
+                                    ) :
+                                    (
+                                        <span onClick={() => setShowBooking(true)} class="px-2 py-1 flex items-center cursor-pointer font-semibold text-xs rounded-md text-blue-400 border border-blue-400  bg-white">
+                                            จองคิว
+                                        </span>
+                                    )
+                                : null
                         }
                         {
-                            showArrived ?
-                                (
-                                    <span onClick={() => setShowArrived(false)} class="px-2 py-1 flex items-center cursor-pointer text-xs rounded-md font-semibold text-pink-500 bg-pink-50">
-                                        {item.arrived_time}
-                                    </span>
-                                ) :
-                                (
-                                    <span onClick={() => setShowArrived(true)} class="px-2 py-1 flex items-center cursor-pointer font-semibold text-xs rounded-md text-pink-400 border border-pink-400  bg-white">
-                                        มาถึง
-                                    </span>
-                                )
+                            item.arrived_time ?
+                                showArrived ?
+                                    (
+                                        <span onClick={() => setShowArrived(false)} class="px-2 py-1 flex items-center cursor-pointer text-xs rounded-md font-semibold text-pink-500 bg-pink-50">
+                                            {item.arrived_time}
+                                        </span>
+                                    ) :
+                                    (
+                                        <span onClick={() => setShowArrived(true)} class="px-2 py-1 flex items-center cursor-pointer font-semibold text-xs rounded-md text-pink-400 border border-pink-400  bg-white">
+                                            มาถึง
+                                        </span>
+                                    )
+                                : null
                         }
                         {
                             item.code ?
@@ -335,7 +355,7 @@ function Progress() {
                     {/* NOTE Progress Bar */}
                     <div class="block m-auto mb-3">
                         <div class="w-full h-2 bg-gray-200 rounded-full mt-2">
-                            <div class={handleProgress(status) + " h-full text-center text-xs text-white bg-purple-500 rounded-full"}></div>
+                            <div class={handleProgress(status) + " h-full text-center text-xs text-white  rounded-full "}></div>
                         </div>
                     </div>
 
