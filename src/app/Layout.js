@@ -8,11 +8,11 @@ function Layout() {
     return (
         <>
             {/* <div>Layout</div> */}
-            <main class="bg-gray-100 dark:bg-gray-800 rounded-2xl h-screen overflow-hidden relative">
-                <div class="flex items-start justify-between">
+            <main className="bg-gray-100 dark:bg-gray-800 rounded-2xl h-screen overflow-hidden relative">
+                <div className="flex items-start justify-between">
 
                     <SideBar />
-                    <div class="flex flex-col w-full pl-0 md:p-4 md:space-y-4">
+                    <div className="flex flex-col w-full pl-0 md:p-4 md:space-y-4">
                         <Header />
                         <Outlet />
                     </div>
