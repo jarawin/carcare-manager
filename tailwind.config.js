@@ -10,10 +10,6 @@ module.exports = {
         100: "25rem",
       },
     },
-    fontSize: {
-      xxs: "0.8rem",
-      xs3: "0.6rem",
-    },
   },
   plugins: [require("flowbite/plugin")],
 };

@@ -147,7 +147,7 @@ function Progress() {
                 <span className=" flex items-center font-semibold text-xs ">
                   <span className="text-gray-500 mr-1 text-right">
                     {item.nickname} <br />
-                    <span className="text-xxs">{item.tel}</span>
+                    <span className="text-xs">{item.tel}</span>
                   </span>
                   {item?.isMakeCommission ? (
                     <div className="flex -space-x-4">
@@ -234,7 +234,7 @@ function Progress() {
 
             {/* NOTE Comment */}
             <div>
-              <p className=" wrapper text-xxs text-gray-400 text-center">
+              <p className=" wrapper text-xs text-gray-400 text-center">
                 {item?.comment ?? " "}
                 <span className="text-gray-500">
                   {" >> " + item.order_type + " Type <<"}

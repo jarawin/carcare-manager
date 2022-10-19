@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  isOpenSideBar: localStorage.getItem("isOpenSideBar") === "true",
+  isOpenSideBar: JSON.parse(localStorage.getItem("isOpenSideBar") ?? "true"),
 };
 
 export const layoutSlice = createSlice({

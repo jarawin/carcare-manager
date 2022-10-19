@@ -1,6 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { selectIsLogin } from "../slices/loginSlice";
 import {
   selectIsOpenSideBar,
   openSideBar,
@@ -13,6 +14,13 @@ import Header from "./components/Header";
 function Layout() {
   const dispatch = useDispatch();
   const isOpenSideBar = useSelector(selectIsOpenSideBar);
+  const isLogin = useSelector(selectIsLogin);
+
+  React.useEffect(() => {
+    if (!isLogin) {
+      window.location.href = "/";
+    }
+  }, [isLogin]);
 
   return (
     <>

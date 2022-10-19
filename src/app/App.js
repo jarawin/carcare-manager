@@ -16,6 +16,7 @@ import QueueHistory from "../pages/queuehistory/QueueHistory";
 import NoPermission from "../pages/nopermission/NoPermission";
 import Profile from "../pages/profile/Profile";
 import Application from "../pages/application/Application";
+import Register from "../pages/register/Register";
 
 function App() {
   return (
@@ -25,7 +26,10 @@ function App() {
         <Route path="/login" element={<Navigate to="/" />} />
         <Route path="/home" element={<Navigate to="/" />} />
 
-        <Route path="/register" element={<Navigate to="/application" />} />
+        <Route path="/r" element={<Navigate to="/register" />} />
+        <Route path="/register" element={<Register />} />
+
+        <Route path="/apply" element={<Navigate to="/application" />} />
         <Route path="/application" element={<Application />} />
 
         <Route path="/" element={<Layout />}>
