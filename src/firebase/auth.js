@@ -1,7 +1,7 @@
-import { initializeApp } from "firebase/app";
-import "firebase/auth";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
 
-const firebaseConfig = initializeApp({
+const firebaseConfig = firebase.initializeApp({
   apiKey: "AIzaSyA8MyLymkGz2hYLGModqwMdDEqU9EgkZko",
   authDomain: "booking-carcare.firebaseapp.com",
   projectId: "booking-carcare",

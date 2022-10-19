@@ -3,6 +3,7 @@ export default [
     comment:
       "Please call me when you arrive at the location to pick up the car",
     isMakeCommission: true,
+    sequence: 1,
     order_id: 1,
     customer_id: 1,
     employee_id: 1,
@@ -41,6 +42,7 @@ export default [
     comment:
       "Please call me when you arrive at the location to pick up the car",
     order_id: 2,
+    sequence: 2,
     customer_id: 1,
     employee_id: 1,
     customer_name: "สมชาย",
@@ -77,6 +79,7 @@ export default [
     comment:
       "Please call me when you arrive at the location to pick up the car",
     order_id: 3,
+    sequence: 3,
     customer_id: 1,
     employee_id: 1,
     customer_name: "สมชาย",
@@ -113,7 +116,7 @@ export default [
         price_per_typeS: [
           { type_of_car: "MC", price: "490" },
           { type_of_car: "SUV", price: "490" },
-          { type_of_car: "TRUCK", price: "90" },
+          { type_of_car: "PICKUP", price: "90" },
           { type_of_car: "SEDAN", price: "490" },
           { type_of_car: "VAN", price: "590" },
         ],
@@ -137,7 +140,7 @@ export default [
         price_per_typeS: [
           { type_of_car: "MC", price: "" },
           { type_of_car: "SUV", price: "" },
-          { type_of_car: "TRUCK", price: "" },
+          { type_of_car: "PICKUP", price: "" },
           { type_of_car: "SEDAN", price: "" },
           { type_of_car: "VAN", price: "" },
         ],
@@ -162,7 +165,7 @@ export default [
         price_per_typeS: [
           { type_of_car: "MC", price: "690" },
           { type_of_car: "SUV", price: "690" },
-          { type_of_car: "TRUCK", price: "790" },
+          { type_of_car: "PICKUP", price: "790" },
           { type_of_car: "SEDAN", price: "690" },
           { type_of_car: "VAN", price: "790" },
         ],
@@ -172,12 +175,13 @@ export default [
   {
     customer_id: 1,
     employee_id: 1,
+    sequence: 4,
     customer_name: "สมชาย",
     employee_name: "พนักงาน 1",
     customer_img: "https://i.pravatar.cc/150?img=3",
     employee_img: "https://i.pravatar.cc/150?img=3",
     order_id: 4,
-    type_car: "TRUCK",
+    type_car: "PICKUP",
     license_car: "กก 1234 สงขลา",
     color_car: "SILVER",
     nickname: "สมชาย",

@@ -17,10 +17,10 @@ function SideBar() {
   return (
     <div className=" h-screen block my-4 ml-4 shadow-lg relative">
       <div className="bg-white h-full rounded-2xl dark:bg-gray-700">
-        <div className="flex">
-          <div className="flex items-center justify-center pt-6 w-10/12">
+        <div className="flex relative ">
+          <div className="flex items-center justify-center p-2 w-full ">
             <img
-              className="w-20 cursor-pointer"
+              className="w-20 cursor-pointer "
               src={logo}
               onClick={(e) => dispatch(addOrder(mockOrders))}
             />
@@ -28,7 +28,7 @@ function SideBar() {
 
           <IoIosArrowBack
             size={25}
-            className="hover:text-red-600 w-2/12 flex items-center justify-center mt-6 text-gray-500 cursor-pointer"
+            className="hover:text-red-600  flex items-center justify-center mt-6 text-gray-500 cursor-pointer absolute top-0 right-3"
             onClick={() => dispatch(closeSideBar())}
           />
         </div>
@@ -48,17 +48,7 @@ function SideBar() {
                         : "text-gray-500  hover:text-red-500 ")
                     }
                   >
-                    <span className="text-left">
-                      <svg
-                        width="20"
-                        height="20"
-                        fill="currentColor"
-                        viewBox="0 0 2048 1792"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M1070 1178l306-564h-654l-306 564h654zm722-282q0 182-71 348t-191 286-286 191-348 71-348-71-286-191-191-286-71-348 71-348 191-286 286-191 348-71 348 71 286 191 191 286 71 348z"></path>
-                      </svg>
-                    </span>
+                    <span className="text-left">{page.icon}</span>
                     <span className="mx-4 text-sm font-normal">
                       {page.name}
                     </span>

@@ -2,34 +2,50 @@ import React from "react";
 import firebaseConfig from "../../firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  selectConfirmPassword,
   selectEmail,
   selectPassword,
   selectError,
   selectIsLoading,
   selectIsLogin,
+  selectDataUser,
   setEmail,
   setPassword,
+  setConfirmPassword,
   setIsLoading,
   setIsLogin,
   setError,
   setDataUser,
 } from "../../slices/loginSlice";
 
-function Login() {
+function Register() {
   const dispatch = useDispatch();
   const email = useSelector(selectEmail);
   const password = useSelector(selectPassword);
+  const confirmPassword = useSelector(selectConfirmPassword);
   const isLoading = useSelector(selectIsLoading);
   const isLogin = useSelector(selectIsLogin);
   const error = useSelector(selectError);
 
-  const verifyLogin = () => {
+  const verifyRegister = () => {
+    if (password !== confirmPassword) {
+      dispatch(setError("Passwords do not match"));
+      return false;
+    }
+    if (password.length < 6) {
+      dispatch(setError("Password must be at least 6 characters"));
+      return false;
+    }
     if (email === "") {
       dispatch(setError("Email is required"));
       return false;
     }
     if (password === "") {
       dispatch(setError("Password is required"));
+      return false;
+    }
+    if (confirmPassword === "") {
+      dispatch(setError("Password confirmation is required"));
       return false;
     }
     return true;
@@ -39,11 +55,12 @@ function Login() {
     e.preventDefault();
     dispatch(setIsLoading(true));
 
-    if (verifyLogin()) {
+    if (verifyRegister()) {
       try {
         const response = await firebaseConfig
           .auth()
-          .signInWithEmailAndPassword(email, password);
+          .createUserWithEmailAndPassword(email, password);
+
         dispatch(setIsLogin(true));
         dispatch(setDataUser(response.user));
         dispatch(setError(null));
@@ -51,23 +68,8 @@ function Login() {
       } catch (error) {
         dispatch(setError(error.message));
         dispatch(setIsLoading(false));
-        alert(error.message);
+        alert(error);
       }
-    }
-  };
-
-  const handleForgotPassword = async (e) => {
-    e.preventDefault();
-    dispatch(setIsLoading(true));
-
-    try {
-      await firebaseConfig.auth().sendPasswordResetEmail(email);
-      dispatch(setIsLoading(false));
-      alert("Password reset email sent");
-    } catch (error) {
-      dispatch(setError(error.message));
-      dispatch(setIsLoading(false));
-      alert(error);
     }
   };
 
@@ -88,7 +90,7 @@ function Login() {
               </h2>
 
               <p class="mt-3 text-gray-500 dark:text-gray-300">
-                ลงชื่อเข้าใช้เพื่อเข้าสู่ระบบ
+                สมัครสมาชิกเพื่อเข้าสู่ระบบ
               </p>
             </div>
 
@@ -105,9 +107,9 @@ function Login() {
                     type="email"
                     name="email"
                     id="email"
+                    placeholder="example@example.com"
                     value={email}
                     onChange={(e) => dispatch(setEmail(e.target.value))}
-                    placeholder="example@example.com"
                     class="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-red-400 dark:focus:border-red-400 focus:ring-red-400 focus:outline-none focus:ring focus:ring-opacity-40"
                   />
                 </div>
@@ -120,12 +122,6 @@ function Login() {
                     >
                       รหัสผ่าน
                     </label>
-                    <a
-                      class="text-sm text-gray-400 focus:text-red-500 hover:text-red-500 hover:underline cursor-pointer"
-                      onClick={handleForgotPassword}
-                    >
-                      ลืมรหัสผ่าน?
-                    </a>
                   </div>
 
                   <input
@@ -135,6 +131,17 @@ function Login() {
                     value={password}
                     onChange={(e) => dispatch(setPassword(e.target.value))}
                     placeholder="Your Password"
+                    class="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-red-400 dark:focus:border-red-400 focus:ring-red-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                  />
+                  <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    value={confirmPassword}
+                    onChange={(e) =>
+                      dispatch(setConfirmPassword(e.target.value))
+                    }
+                    placeholder="Confirm Password"
                     class="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-red-400 dark:focus:border-red-400 focus:ring-red-400 focus:outline-none focus:ring focus:ring-opacity-40"
                   />
                 </div>
@@ -148,21 +155,21 @@ function Login() {
                         : " cursor-pointer") +
                       " w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-red-500 rounded-md hover:bg-red-400 focus:outline-none focus:bg-red-400 focus:ring focus:ring-red-300 focus:ring-opacity-50"
                     }
-                    disabled={isLoading}
                     onClick={handleSubmit}
+                    disabled={isLoading}
                   >
-                    ลงชื่อเข้าใช้
+                    สมัครสมาชิก
                   </button>
                 </div>
               </div>
 
               <p class="mt-6 text-sm text-center text-gray-400">
-                ยังไม่มีบัญชีใช่ไหม?{" "}
+                คุณมีบัญชีอยู่แล้วใช่หรือไม่?{" "}
                 <a
-                  href="/register"
+                  href="/login"
                   class="text-red-500 focus:outline-none focus:underline hover:underline"
                 >
-                  สมัครสมาชิก
+                  ลงชื่อเข้าใช้
                 </a>
                 .
               </p>
@@ -174,4 +181,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Register;
