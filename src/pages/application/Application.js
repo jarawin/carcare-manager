@@ -15,12 +15,12 @@ function Application() {
   const isLogin = useSelector(selectIsLogin);
 
   React.useEffect(() => {
-    if (!isLogin) {
-      window.location.href = "/";
-    }
-    if (isEmployee) {
-      window.location.href = "/queue";
-    }
+    // if (!isLogin) {
+    //   window.location.href = "/";
+    // }
+    // if (isEmployee) {
+    //   window.location.href = "/queue";
+    // }
   }, [isLogin, isEmployee]);
 
   return (

@@ -17,9 +17,9 @@ function Layout() {
   const isLogin = useSelector(selectIsLogin);
 
   React.useEffect(() => {
-    if (!isLogin) {
-      window.location.href = "/";
-    }
+    // if (!isLogin) {
+    //   window.location.href = "/";
+    // }
   }, [isLogin]);
 
   return (
