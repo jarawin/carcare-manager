@@ -107,7 +107,7 @@ const rows = [
 const headers = [
   { label: "ดูรายละเอียด", minWidth: 100 },
   { label: "รหัสโปรโมชั่น", minWidth: 100 },
-  { label: "ชื่อโปรโมชั่น", minWidth: 100 },
+  { label: "ชื่อโปรโมชั่น", minWidth: 150 },
   { label: "รายละเอียด", minWidth: 200 },
   { label: "วันที่เริ่ม", minWidth: 100 },
   { label: "วันที่สิ้นสุด", minWidth: 100 },
