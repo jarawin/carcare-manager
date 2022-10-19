@@ -1,0 +1,71 @@
+export default
+[{
+    "customer_id":"88888888-0000-4444-4444-121212121210",
+    "firstlogin_time":"1664598457",
+    "lastlogin_time":"1664598457",
+    "fname":"จารวิน",
+    "lname":"พรมสวัสดิ์",
+    "email":"jar@gmail.com",
+    "picture_url":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfuSTDCkFtxG2yl9qDYnHEwV6vF6Y9hkbiuzLmOaVoO_jupwImy1-NmP_kd8LiPzaimI8&usqp=CAU",
+    "customer_type":"GENERAL",
+    "rank":"BRONZE",
+    "tel":"0874453451",
+    "buy":[{"package_id":"88888888-0000-0000-4444-121212121210","timestamp":"1664598457"}]
+    },
+    
+    {
+    "customer_id":"88888888-0000-4444-4444-121212121211",
+    "firstlogin_time":"1664598458",
+    "lastlogin_time":"1664598458",
+    "fname":"กุลธิดา",
+    "lname":"ศรีสุวรรณ",
+    "email":"kul@gmail.com",
+    "picture_url":"https://www2.deloitte.com/content/dam/Deloitte/nl/Images/promo_images/deloitte-nl-cm-digital-human-promo.jpg",
+    "customer_type":"MEMBER",
+    "rank":"SILVER",
+    "tel":"0874453452",
+    "buy":[{"package_id":"88888888-0000-0000-4444-121212121211","timestamp":"1664598458"}]
+    },
+    
+    {
+    "customer_id":"88888888-0000-4444-4444-121212121212",
+    "firstlogin_time":"1664598459",
+    "lastlogin_time":"1664598459",
+    "fname":"สมชาย",
+    "lname":"คงดี",
+    "email":"som@gmail.com",
+    "picture_url":"https://i0.wp.com/digitalhumans.com/wp-content/uploads/2020/10/Rachel-website-case-study-headshot-1.png?fit=1924%2C1084&ssl=1",
+    "customer_type":"GENERAL",
+    "rank":"GOLD",
+    "tel":"0874453453",
+    "buy":[{"package_id":"88888888-0000-0000-4444-121212121212","timestamp":"1664598459"}]
+    },
+    
+    {
+    "customer_id":"88888888-0000-4444-4444-121212121213",
+    "firstlogin_time":"1664598460",
+    "lastlogin_time":"1664598460",
+    "fname":"มาโนช",
+    "lname":"สุขสม",
+    "email":"ma@gmail.com",
+    "picture_url":"https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg",
+    "customer_type":"MEMBER",
+    "rank":"SILVER",
+    "tel":"0874453454",
+    "buy":[{"package_id":"88888888-0000-0000-4444-121212121213","timestamp":"1664598460"}]
+    },
+    
+    {
+    "customer_id":"88888888-0000-4444-4444-121212121214",
+    "firstlogin_time":"1664598461",
+    "lastlogin_time":"1664598461",
+    "fname":"สมศรี",
+    "lname":"เทพเทวา",
+    "email":"sri@gmail.com",
+    "picture_url":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ83e4wvk1O0WqBI-_O7jIs74TPIHu3TgEMybBncqV4w6VMwaHaHBjwEI3P8-SQeCfDx5c&usqp=CAU",
+    "customer_type":"GENERAL",
+    "rank":"GOLD",
+    "tel":"0874453455",
+    "buy":[{"package_id":"88888888-0000-0000-4444-121212121214","timestamp":"1664598461"}]
+    }
+]
