@@ -4,6 +4,8 @@ import { useDispatch } from "react-redux";
 import { closeSideBar } from "../../slices/layoutSlice";
 import { addOrder } from "../../slices/ordersSlice";
 
+import DarkMode from "./DarkMode";
+
 import mockOrders from "../../assets/data/mock/mockOrders";
 
 import { IoIosArrowBack } from "react-icons/io";
@@ -58,6 +60,8 @@ function SideBar() {
             })}
           </div>
         </nav>
+
+        <DarkMode />
       </div>
     </div>
   );

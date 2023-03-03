@@ -14,6 +14,7 @@ import SpeedDialIcon from "@mui/material/SpeedDialIcon";
 import SpeedDialAction from "@mui/material/SpeedDialAction";
 import FileCopyIcon from "@mui/icons-material/FileCopyOutlined";
 import SaveIcon from "@mui/icons-material/Save";
+import Backdrop from "@mui/material/Backdrop";
 
 import { AiOutlineReload } from "react-icons/ai";
 import { GrAdd } from "react-icons/gr";
@@ -21,10 +22,14 @@ import { FaPen } from "react-icons/fa";
 
 import mockPromotions from "../../assets/data/mock/mockPromotions";
 import mockServices from "../../assets/data/mock/mockServices";
+import tempPromotions from "../../assets/data/temp/tempPromotions";
+import promotionsAPI from "../../apis/promotions";
+
+import { useDispatch, useSelector } from "react-redux";
+import { selectProm, setProm, addProm } from "../../slices/promSlice";
 
 const copyUrl = () => {
   navigator.clipboard.writeText(window.location.href);
-  console.log(JSON.stringify(mockPromotions));
 };
 
 const reload = () => {
@@ -40,69 +45,6 @@ const actions = [
 ];
 
 // unix time to date time format dd/mm/yyyy hh:mm:ss
-function unixTimeToDate(unixTime) {
-  const date = new Date(unixTime * 1000);
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  const hours = date.getHours();
-  const minutes = "0" + date.getMinutes();
-  const seconds = "0" + date.getSeconds();
-  const formattedTime =
-    day +
-    "/" +
-    month +
-    "/" +
-    year +
-    " " +
-    hours +
-    ":" +
-    minutes.substr(-2) +
-    ":" +
-    seconds.substr(-2);
-  return formattedTime;
-}
-
-function createData(
-  code,
-  name,
-  desciption,
-  starttime,
-  endtime,
-  prices,
-  services
-) {
-  return {
-    code,
-    name,
-    desciption,
-    starttime,
-    endtime,
-    prices,
-    services,
-  };
-}
-
-const rows = [
-  createData(
-    mockPromotions[0].code,
-    mockPromotions[0].name,
-    mockPromotions[0].desciption,
-    unixTimeToDate(mockPromotions[0].starttime),
-    unixTimeToDate(mockPromotions[0].endtime),
-    mockPromotions[0].price_per_typeP,
-    mockPromotions[0].can_reduce
-  ),
-  createData(
-    mockPromotions[1].code,
-    mockPromotions[1].name,
-    mockPromotions[1].desciption,
-    unixTimeToDate(mockPromotions[1].starttime),
-    unixTimeToDate(mockPromotions[1].endtime),
-    mockPromotions[1].price_per_typeP,
-    mockPromotions[1].can_reduce
-  ),
-];
 
 const headers = [
   { label: "ดูรายละเอียด", minWidth: 100 },
@@ -116,19 +58,69 @@ const headers = [
 ];
 
 export default function CollapsibleTable() {
+  const [promotions, setPromotions] = React.useState([]);
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const dispatch = useDispatch();
+  const prom = useSelector(selectProm);
+
+  const getPromotionsInfo = async () => {
+    try {
+    } catch (error) {
+      console.log(error?.response?.data);
+    }
+  };
+
+  const handleSpeedDialClick = (type) => {
+    setOpen(false);
+
+    switch (type) {
+      case "Add":
+        dispatch(setProm([...mockPromotions, tempPromotions]));
+        console.log("Add");
+        break;
+      case "Edit":
+        dispatch(setProm(mockPromotions));
+        break;
+      case "Save":
+        console.log("Save");
+        break;
+      case "Copy":
+        navigator.clipboard.writeText(window.location.href);
+        break;
+      case "Reload":
+        localStorage.removeItem("prom");
+        window.location.reload();
+        break;
+      default:
+        break;
+    }
+  };
+
+  React.useEffect(() => {
+    console.log("prom", prom);
+  }, [prom]);
+
   return (
-    <div className="overflow-y-auto h-screen mt-5 sm:mt-0 pb-36">
+    <div className="overflow-y-auto h-screen mt-5 sm:mt-0 pb-36 z-40">
+      <Backdrop open={open} />
       <SpeedDial
         ariaLabel="SpeedDial basic example"
         sx={{ position: "absolute", bottom: 16, right: 16 }}
         icon={<SpeedDialIcon />}
+        onClose={handleClose}
+        onOpen={handleOpen}
+        open={open}
       >
         {actions.map((action) => (
           <SpeedDialAction
             key={action.name}
             icon={action.icon}
             tooltipTitle={action.name}
-            onClick={action.onClick}
+            tooltipOpen
+            onClick={(e) => handleSpeedDialClick(action.name)}
           />
         ))}
       </SpeedDial>
@@ -149,9 +141,9 @@ export default function CollapsibleTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, idx) => (
-              <Row key={idx} row={row} />
-            ))}
+            {prom.map((row, idx) => {
+              return <Row key={idx} idx={idx} row={row} />;
+            })}
           </TableBody>
         </Table>
       </TableContainer>
