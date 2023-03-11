@@ -39,6 +39,12 @@ import {
   setDescriptions,
   setStartDate,
   setEndDate,
+  setReduce,
+  setReduceType,
+  setLimitAmount,
+  setLimitType,
+  setCanReduce,
+  setDays,
   delProm,
 } from "../../../slices/promSlice";
 
@@ -57,34 +63,58 @@ function unixTimeToDate(unixTime) {
   return formattedTime;
 }
 
+// const days = [
+//   {
+//     name: "วันอาทิตย์",
+//     value: "SUNDAY",
+//   },
+//   {
+//     name: "วันจันทร์",
+//     value: "MONDAY",
+//   },
+//   {
+//     name: "วันอังคาร",
+//     value: "TUESDAY",
+//   },
+//   {
+//     name: "วันพุธ",
+//     value: "WEDNESDAY",
+//   },
+//   {
+//     name: "วันพฤหัสบดี",
+//     value: "THURSDAY",
+//   },
+//   {
+//     name: "วันศุกร์",
+//     value: "FRIDAY",
+//   },
+//   {
+//     name: "วันเสาร์",
+//     value: "SATURDAY",
+//   },
+// ];
+
 const days = [
   {
-    name: "วันอาทิตย์",
-    value: "SUNDAY",
+    day: "SUNDAY",
   },
   {
-    name: "วันจันทร์",
-    value: "MONDAY",
+    day: "MONDAY",
   },
   {
-    name: "วันอังคาร",
-    value: "TUESDAY",
+    day: "TUESDAY",
   },
   {
-    name: "วันพุธ",
-    value: "WEDNESDAY",
+    day: "WEDNESDAY",
   },
   {
-    name: "วันพฤหัสบดี",
-    value: "THURSDAY",
+    day: "THURSDAY",
   },
   {
-    name: "วันศุกร์",
-    value: "FRIDAY",
+    day: "FRIDAY",
   },
   {
-    name: "วันเสาร์",
-    value: "SATURDAY",
+    day: "SATURDAY",
   },
 ];
 
@@ -107,10 +137,15 @@ export default function Row(props) {
     if (
       row.name === "" ||
       row.code === "" ||
+      row.descriptions === "" ||
       row.startDate === "" ||
       row.endDate === "" ||
       row.unit === "" ||
-      row.value === ""
+      row.value === "" ||
+      row.limit_amount === "" ||
+      row.limit_type === "" ||
+      row.can_reduce === "" ||
+      row.days === ""
     ) {
       return false;
     }
@@ -126,8 +161,77 @@ export default function Row(props) {
   const prom = useSelector(selectProm)[idx];
 
   const handleUpdate = () => {
+    if (
+      !prom.code ||
+      !prom.name ||
+      !prom.descriptions ||
+      !prom.starttime ||
+      !prom.endtime ||
+      !prom.limit_amount ||
+      !prom.limit_type ||
+      !prom.price_per_typeP ||
+      !prom.days ||
+      !prom.can_reduce
+      // prom.limit_amount <= 0
+    ) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    if (!(prom.limit_amount > 0)) {
+      alert("Please enter a valid 'limit_amount'");
+      return;
+    }
+
+    const hasValidPricePerTypeP = prom.price_per_typeP.every(
+      (item) => item.reduce > 0
+    );
+
+    if (!hasValidPricePerTypeP) {
+      alert(
+        "Please enter a valid 'reduce' value for each item in 'price_per_typeP'."
+      );
+      return;
+    }
+
+    if (prom.can_reduce.length === 0) {
+      alert("Please enter at least one item in 'can_reduce'.");
+      return;
+    }
+
+    const hasValidCanReduce = prom.can_reduce.every(
+      (item) => item.name.trim().length > 0
+    );
+
+    if (!hasValidCanReduce) {
+      alert("Please enter a valid 'name' for each item in 'can_reduce'.");
+      return;
+    }
+
+    if (prom.days.length === 0) {
+      alert("Please enter at least one item in 'day'.");
+      return;
+    }
+
+    const hasValidDays = prom.days.every((item) => item.day.trim().length > 0);
+
+    if (!hasValidDays) {
+      alert("Please enter a valid 'day' for each item in 'days'.");
+      return;
+    }
+
     setIsEdit(false);
-    alert("Update");
+    console.log(prom);
+    fetch("http://127.0.0.1:3001/promotions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(prom),
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.error(error));
   };
 
   const handleTrash = (code) => {
@@ -199,17 +303,17 @@ export default function Row(props) {
             <TextField
               size="small"
               variant="outlined"
-              defaultValue={row.desciption}
+              defaultValue={row.descriptions}
               onChange={(e) =>
                 dispatch(
-                  setDescriptions({ idx: idx, desciption: e.target.value })
+                  setDescriptions({ idx: idx, descriptions: e.target.value })
                 )
               }
-              value={row.desciption}
+              value={row.descriptions}
               sx={{ width: "100%" }}
             />
           ) : (
-            row.desciption
+            row.descriptions
           )}
         </TableCell>
         <TableCell align="right">
@@ -309,6 +413,16 @@ export default function Row(props) {
                             size="small"
                             variant="outlined"
                             defaultValue={p.reduce}
+                            onChange={(e) => {
+                              const newValue = e.target.value;
+                              dispatch(
+                                setReduce({
+                                  idx: idx,
+                                  reduce: newValue,
+                                  index: i,
+                                })
+                              );
+                            }}
                             value={p.reduce}
                             sx={{ width: "100%" }}
                           />
@@ -319,7 +433,19 @@ export default function Row(props) {
                       <TableCell align="right">
                         {isEdit ? (
                           <FormControl fullWidth>
-                            <Select value={p.reduce_type} size="small">
+                            <Select
+                              value={p.reduce_type}
+                              size="small"
+                              onChange={(e) => {
+                                dispatch(
+                                  setReduceType({
+                                    idx: idx,
+                                    reduce_type: e.target.value,
+                                    index: i,
+                                  })
+                                );
+                              }}
+                            >
                               {units.map((c, i) => (
                                 <MenuItem key={i} value={c.value}>
                                   {c.label}
@@ -342,6 +468,16 @@ export default function Row(props) {
                   disabled={!isEdit}
                   label="จำนวนครั้งต่อข้อจำกัด"
                   variant="outlined"
+                  defaultValue={row.limit_amount}
+                  // value={row.limit_amount}
+                  onChange={(e) => {
+                    dispatch(
+                      setLimitAmount({
+                        idx: idx,
+                        limit_amount: e.target.value,
+                      })
+                    );
+                  }}
                   type="number"
                   sx={{ width: "100%" }}
                 />
@@ -351,7 +487,18 @@ export default function Row(props) {
                   <InputLabel id="demo-simple-select-label">
                     ประเภทข้อจำกัดของโปรโมชั่น
                   </InputLabel>
-                  <Select label="ประเภทข้อจำกัดของโปรโมชั่น">
+                  <Select
+                    label="ประเภทข้อจำกัดของโปรโมชั่น"
+                    defaultValue={row.limit_type}
+                    onChange={(e) => {
+                      dispatch(
+                        setLimitType({
+                          idx: idx,
+                          limit_type: e.target.value,
+                        })
+                      );
+                    }}
+                  >
                     {["DAILY", "MONTHLY", "HOURLY", "FOREVER"].map((c, i) => (
                       <MenuItem key={i} value={c}>
                         {c}
@@ -361,7 +508,7 @@ export default function Row(props) {
                 </FormControl>
               </Grid>
             </Grid>
-            <Grid container spacing={2} columns={16} sx={{ marginTop: 1 }}>
+            {/* <Grid container spacing={2} columns={16} sx={{ marginTop: 1 }}>
               <Grid item xs={8}>
                 <Autocomplete
                   disabled={!isEdit}
@@ -408,7 +555,7 @@ export default function Row(props) {
                   )}
                 />
               </Grid>
-            </Grid>
+            </Grid> */}
 
             {/* บริการ */}
             <Autocomplete
@@ -438,6 +585,15 @@ export default function Row(props) {
                   placeholder="บริการ"
                 />
               )}
+              onChange={(event, selectedOptions) => {
+                dispatch(
+                  setCanReduce({
+                    idx: idx,
+                    can_reduce: selectedOptions,
+                  })
+                );
+              }}
+              defaultValue={row.can_reduce}
             />
             {/* วันที่สามารถใช้บริการนี้ได้ */}
             <Autocomplete
@@ -447,7 +603,7 @@ export default function Row(props) {
               options={days}
               disableCloseOnSelect
               limitTags={3}
-              getOptionLabel={(option) => option.name}
+              getOptionLabel={(option) => option.day}
               renderOption={(props, option, { selected }) => (
                 <li {...props}>
                   <Checkbox
@@ -456,7 +612,7 @@ export default function Row(props) {
                     style={{ marginRight: 8 }}
                     checked={selected}
                   />
-                  {option.name}
+                  {option.day}
                 </li>
               )}
               style={{ width: "full", marginTop: 20, marginBottom: 20 }}
@@ -467,6 +623,15 @@ export default function Row(props) {
                   placeholder="วัน"
                 />
               )}
+              onChange={(event, selectedOptions) => {
+                dispatch(
+                  setDays({
+                    idx: idx,
+                    days: selectedOptions,
+                  })
+                );
+              }}
+              defaultValue={row.days}
             />
           </Collapse>
         </TableCell>

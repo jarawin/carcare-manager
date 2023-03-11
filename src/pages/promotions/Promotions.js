@@ -67,10 +67,17 @@ export default function CollapsibleTable() {
   const prom = useSelector(selectProm);
 
   const getPromotionsInfo = async () => {
-    try {
-    } catch (error) {
-      console.log(error?.response?.data);
-    }
+    return new Promise((resolve, reject) => {
+      fetch("http://127.0.0.1:3001/promotions", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => resolve(data))
+        .catch((error) => console.error(error));
+    });
   };
 
   const handleSpeedDialClick = (type) => {
@@ -78,7 +85,7 @@ export default function CollapsibleTable() {
 
     switch (type) {
       case "Add":
-        dispatch(setProm([...mockPromotions, tempPromotions]));
+        dispatch(setProm([...prom, tempPromotions]));
         console.log("Add");
         break;
       case "Edit":
@@ -100,8 +107,19 @@ export default function CollapsibleTable() {
   };
 
   React.useEffect(() => {
-    console.log("prom", prom);
-  }, [prom]);
+    fetch("http://127.0.0.1:3001/promotions", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      // .then((data) => console.log(data.promotions))
+      .then((data) => dispatch(setProm(data.promotions)))
+
+      .catch((error) => console.error(error));
+    // dispatch(setProm([...mockPromotions, tempPromotions]));
+  }, []);
 
   return (
     <div className="overflow-y-auto h-screen mt-5 sm:mt-0 pb-36 z-40">
