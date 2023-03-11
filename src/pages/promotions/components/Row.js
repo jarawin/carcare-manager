@@ -240,6 +240,22 @@ export default function Row(props) {
     } else {
       if (window.confirm("คุณต้องการลบโปรโมชั่นนี้ใช่หรือไม่?")) {
         dispatch(delProm(code));
+        fetch("http://127.0.0.1:3001/promotions", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(prom),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              alert("Delete success");
+            } else {
+              alert("Delete not success");
+            }
+          })
+          .catch((error) => console.error(error));
       }
     }
   };
