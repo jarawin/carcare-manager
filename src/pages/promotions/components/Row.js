@@ -33,6 +33,7 @@ import { MdSave, MdCancel } from "react-icons/md";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
+  setOldCode,
   setName,
   selectProm,
   setCode,
@@ -137,6 +138,7 @@ export default function Row(props) {
     if (
       row.name === "" ||
       row.code === "" ||
+      row.old_code === "" ||
       row.descriptions === "" ||
       row.startDate === "" ||
       row.endDate === "" ||
@@ -219,19 +221,55 @@ export default function Row(props) {
       alert("Please enter a valid 'day' for each item in 'days'.");
       return;
     }
-
-    setIsEdit(false);
-    console.log(prom);
-    fetch("http://127.0.0.1:3001/promotions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(prom),
-    })
-      .then((response) => response.json())
-      .then((data) => console.log(data))
-      .catch((error) => console.error(error));
+    console.log(prom.old_code + "===" + prom.code);
+    if (prom.old_code === prom.code) {
+      setIsEdit(false);
+      fetch("http://127.0.0.1:3001/promotions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(prom),
+      })
+        .then((response) => response.json())
+        .then((data) => console.log(data))
+        .then(() => setCode({ idx: idx, old_code: prom.code }))
+        .catch((error) => console.error(error));
+    } else {
+      console.log(prom.code);
+      fetch(
+        `http://127.0.0.1:3001/promotions/checkduplicate?code=${prom.code}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data.isDuplicate);
+          if (data.isDuplicate) {
+            alert(JSON.stringify("Duplicate key"));
+            return;
+          } else {
+            setIsEdit(false);
+            console.log(prom);
+            fetch("http://127.0.0.1:3001/promotions", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(prom),
+            })
+              .then((response) => response.json())
+              .then((data) => console.log(data))
+              .catch((error) => console.error(error));
+          }
+        })
+        .catch((error) => console.error(error));
+      console.log(prom.code);
+    }
   };
 
   const handleTrash = (code) => {
@@ -260,6 +298,12 @@ export default function Row(props) {
     }
   };
 
+  const handleEditAndSetOldCode = (idx, currentCode) => {
+    console.log("call function handleEditAndSetOldCode" + currentCode);
+    dispatch(setOldCode({ idx: idx, old_code: currentCode }));
+    setIsEdit(true);
+    console.log("setIsEdit(true)");
+  };
   React.useEffect(() => {
     dispatch(setStartDate({ idx: idx, startDate: dateStartIn.unix() }));
     dispatch(setEndDate({ idx: idx, endDate: dateEndIn.unix() }));
@@ -337,13 +381,14 @@ export default function Row(props) {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Stack spacing={3}>
                 <DatePicker
-                  // disablePast
+                  disablePast={true} // Disable past dates
                   openTo="day"
                   views={["year", "month", "day"]}
                   onChange={(e) => {
                     setDateStartIn(e);
                   }}
-                  value={dayjs(dateStartIn).format("DD/MM/YYYY")}
+                  defaultvalue={dayjs(prom.startDate).format("DD/MM/YYYY")}
+                  maxDate={dayjs("9999-12-31").toDate()} // Set maxDate to year 9999
                   renderInput={(params) => (
                     <TextField size="small" variant="outlined" {...params} />
                   )}
@@ -351,7 +396,7 @@ export default function Row(props) {
               </Stack>
             </LocalizationProvider>
           ) : (
-            unixTimeToDate(row.starttime)
+            unixTimeToDate(prom.startDate)
           )}
         </TableCell>
         <TableCell align="right">
@@ -359,13 +404,15 @@ export default function Row(props) {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Stack spacing={3}>
                 <DatePicker
-                  // disablePast
+                  disablePast={true} // Disable past dates
                   openTo="day"
                   views={["year", "month", "day"]}
                   onChange={(e) => {
-                    setDateEndIn(e);
+                    console.log(e);
+                    setEndDate(e);
                   }}
-                  value={dayjs(dateEndIn).format("DD/MM/YYYY")}
+                  defaultvalue={dayjs(prom.endDate).format("DD/MM/YYYY")}
+                  maxDate={dayjs("9999-12-31").toDate()} // Set maxDate to year 9999
                   renderInput={(params) => (
                     <TextField size="small" variant="outlined" {...params} />
                   )}
@@ -373,7 +420,7 @@ export default function Row(props) {
               </Stack>
             </LocalizationProvider>
           ) : (
-            unixTimeToDate(row.endtime)
+            unixTimeToDate(prom.endDate)
           )}
         </TableCell>
         <TableCell align="center">
@@ -385,7 +432,7 @@ export default function Row(props) {
                 onClick={handleUpdate}
               />
             ) : (
-              <FaPen onClick={() => setIsEdit(true)} />
+              <FaPen onClick={() => handleEditAndSetOldCode(idx, prom.code)} />
             )}
           </IconButton>
         </TableCell>

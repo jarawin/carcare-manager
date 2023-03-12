@@ -39,6 +39,14 @@ export const promSlice = createSlice({
       state.prom[idx].code = code;
       localStorage.setItem("prom", JSON.stringify(state.prom));
     },
+    setOldCode: (state, action) => {
+      console.log("setOldCode start!!!");
+      const idx = action.payload.idx;
+      const old_code = action.payload.old_code;
+      console.log("old_code is " + old_code);
+      state.prom[idx].old_code = old_code;
+      localStorage.setItem("prom", JSON.stringify(state.prom));
+    },
     setDescriptions: (state, action) => {
       const idx = action.payload.idx;
       const descriptions = action.payload.descriptions;
@@ -107,6 +115,7 @@ export const promSlice = createSlice({
 });
 
 export const {
+  setOldCode,
   setProm,
   addProm,
   setName,
