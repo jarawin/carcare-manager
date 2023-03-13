@@ -62,6 +62,7 @@ export const promSlice = createSlice({
     setEndDate: (state, action) => {
       const idx = action.payload.idx;
       const endDate = action.payload.endDate;
+      console.log("start to set endDate: " + endDate);
       state.prom[idx].endDate = endDate;
       localStorage.setItem("prom", JSON.stringify(state.prom));
     },

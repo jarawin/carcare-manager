@@ -167,8 +167,8 @@ export default function Row(props) {
       !prom.code ||
       !prom.name ||
       !prom.descriptions ||
-      !prom.starttime ||
-      !prom.endtime ||
+      // !prom.startDate ||
+      // !prom.endDate ||
       !prom.limit_amount ||
       !prom.limit_type ||
       !prom.price_per_typeP ||
@@ -180,8 +180,16 @@ export default function Row(props) {
       return;
     }
 
+    const pattern = /^[a-zA-Z0-9]*$/;
+    if (!pattern.test(prom.code)) {
+      alert(
+        "Code, name, and description do not only contain characters and numbers"
+      );
+      return;
+    }
+
     if (!(prom.limit_amount > 0)) {
-      alert("Please enter a valid 'limit_amount'");
+      alert("limit_amount must number and great than zero");
       return;
     }
 
@@ -190,9 +198,7 @@ export default function Row(props) {
     );
 
     if (!hasValidPricePerTypeP) {
-      alert(
-        "Please enter a valid 'reduce' value for each item in 'price_per_typeP'."
-      );
+      alert("reduce  must number and great than zero");
       return;
     }
 
@@ -225,7 +231,7 @@ export default function Row(props) {
     if (prom.old_code === prom.code) {
       setIsEdit(false);
       fetch("http://127.0.0.1:3001/promotions", {
-        method: "POST",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -255,6 +261,16 @@ export default function Row(props) {
           } else {
             setIsEdit(false);
             console.log(prom);
+            fetch(`http://127.0.0.1:3001/promotions?code=${prom.old_code}`, {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(prom),
+            })
+              .then((response) => response.json())
+              .then((data) => console.log(data))
+              .catch((error) => console.error(error));
             fetch("http://127.0.0.1:3001/promotions", {
               method: "POST",
               headers: {
@@ -278,7 +294,7 @@ export default function Row(props) {
     } else {
       if (window.confirm("คุณต้องการลบโปรโมชั่นนี้ใช่หรือไม่?")) {
         dispatch(delProm(code));
-        fetch("http://127.0.0.1:3001/promotions", {
+        fetch(`http://127.0.0.1:3001/promotions?code=${prom.code}`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
@@ -384,8 +400,8 @@ export default function Row(props) {
                   disablePast={true} // Disable past dates
                   openTo="day"
                   views={["year", "month", "day"]}
-                  onChange={(e) => {
-                    setDateStartIn(e);
+                  onChange={(date) => {
+                    dispatch(setStartDate({ idx: idx, startDate: date }));
                   }}
                   defaultvalue={dayjs(prom.startDate).format("DD/MM/YYYY")}
                   maxDate={dayjs("9999-12-31").toDate()} // Set maxDate to year 9999
@@ -407,9 +423,9 @@ export default function Row(props) {
                   disablePast={true} // Disable past dates
                   openTo="day"
                   views={["year", "month", "day"]}
-                  onChange={(e) => {
-                    console.log(e);
-                    setEndDate(e);
+                  onChange={(date) => {
+                    console.log("endDae: " + date);
+                    dispatch(setEndDate({ idx: idx, endDate: date }));
                   }}
                   defaultvalue={dayjs(prom.endDate).format("DD/MM/YYYY")}
                   maxDate={dayjs("9999-12-31").toDate()} // Set maxDate to year 9999
